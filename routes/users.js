@@ -1,5 +1,7 @@
+/* eslint-disable no-console */
 const routerUsers = require('express').Router();
 const path = require('path');
+
 const pathUsers = path.join(__dirname, '../data/users.json');
 
 const promisesFs = require('fs').promises;
@@ -26,6 +28,7 @@ routerUsers.get('/', (req, res) => {
 });
 
 function getUser(id, users) {
+  // eslint-disable-next-line no-underscore-dangle
   return users.find((evt) => evt._id === id);
 }
 
