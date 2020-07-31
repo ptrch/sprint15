@@ -6,10 +6,6 @@ const pathUsers = path.join(__dirname, '../data/users.json');
 
 const promisesFs = require('fs').promises;
 
-// routerUsers.get('/', (req, res) => {
-//   res.send(users);
-// });
-
 routerUsers.get('/', (req, res) => {
   promisesFs.readFile(pathUsers, { encoding: 'utf8' })
     .then((data) => {
