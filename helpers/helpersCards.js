@@ -20,5 +20,4 @@ const helpCards = (req, res) => {
       res.status(500).send({ message: 'Что-то определенно сломалось' });
     });
 };
-
 module.exports = helpCards;
