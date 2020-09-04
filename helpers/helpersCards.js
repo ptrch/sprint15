@@ -1,8 +1,5 @@
 /* eslint-disable no-console */
-const path = require('path');
-
-const pathCards = path.join(__dirname, '../data/cards.json');
-const promisesFs = require('fs').promises;
+const { pathCards, promisesFs } = require('../routes/cards');
 
 const helpCards = (req, res) => {
   promisesFs.readFile(pathCards, { encoding: 'utf8' })
