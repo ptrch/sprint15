@@ -19,16 +19,15 @@ module.exports.createCard = (req, res) => {
 
 module.exports.delCard = (req, res) => {
   Card.findByIdAndDelete(req.params.cardId)
+    .orFail(new Error('CastError'))
     .then((card) => {
-      if (card === null) {
-        res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
-        return;
-      }
-      res.send({ data: card });
+      res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: `Не удалось удалить карточку cardId - ${req.params.cardId}` });
-      } else res.status(500).send({ message: 'Ошибка сервера' });
+        res.status(404).send({ message: 'Не удалось удалить карточку. Запрашиваемый ресурс не найден' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
+      }
     });
 };
