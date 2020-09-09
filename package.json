@@ -1,7 +1,7 @@
 {
   "name": "sprint13",
   "version": "1.0.0",
-  "description": "**Ver 0.0.2**",
+  "description": "project Mesto",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,16 +10,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ptrch/Sprint13.git"
+    "url": "git+https://github.com/ptrch/sprint13.git"
   },
-  "author": "Maksim Sosnovskiy",
+  "author": "Petrichenko Alexander",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ptrch/Sprint13/issues"
+    "url": "https://github.com/ptrch/sprint13/issues"
   },
-  "homepage": "https://github.com/ptrch/Sprint13#readme",
+  "homepage": "https://github.com/ptrch/sprint13#readme",
   "devDependencies": {
-    "eslint": "^7.6.0",
+    "eslint": "^7.8.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
     "nodemon": "^2.0.4"

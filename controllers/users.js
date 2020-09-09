@@ -2,23 +2,22 @@ const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
-    .then((user) => res.send({ data: users }))
+    .then((users) => res.send({ data: users }))
     .catch(() => res.status(500).send({ message: 'Ошибка сервера' }));
-
 };
 
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user === null) {
-        res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
+        res.status(404).send({ message: 'Ошибка сервера' });
         return;
       }
       res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: `Не удалось найти пользователя  userId - ${req.params.userId}` });
+        res.status(400).send({ message: `Не удалось найти пользователя userId - ${req.params.userId}` });
       } else res.status(500).send({ message: 'Ошибка сервера' });
     });
 };

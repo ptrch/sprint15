@@ -1,4 +1,4 @@
-const Card = require ('../models/card');
+const Card = require('../models/card');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -17,7 +17,7 @@ module.exports.createCard = (req, res) => {
     });
 };
 
-module.exports.removeCard = (req, res) => {
+module.exports.delCard = (req, res) => {
   Card.findByIdAndDelete(req.params.cardId)
     .then((card) => {
       if (card === null) {
