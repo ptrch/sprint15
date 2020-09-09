@@ -8,17 +8,16 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
+    .orFail(new Error('CastError'))
     .then((user) => {
-      if (user === null) {
-        res.status(404).send({ message: 'Ошибка сервера' });
-        return;
-      }
-      res.send({ data: user });
+      res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: `Не удалось найти пользователя userId - ${req.params.userId}` });
-      } else res.status(500).send({ message: 'Ошибка сервера' });
+        res.status(404).send({ message: 'Не удалось найти пользователя' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
+      }
     });
 };
 
