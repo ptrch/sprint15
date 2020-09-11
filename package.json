@@ -1,5 +1,5 @@
 {
-  "name": "sprint13",
+  "name": "sprint14",
   "version": "1.0.0",
   "description": "project Mesto",
   "main": "app.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ptrch/sprint13.git"
+    "url": "git+https://github.com/ptrch/sprint14.git"
   },
   "author": "Petrichenko Alexander",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ptrch/sprint13/issues"
+    "url": "https://github.com/ptrch/sprint14/issues"
   },
-  "homepage": "https://github.com/ptrch/sprint13#readme",
+  "homepage": "https://github.com/ptrch/sprint14#readme",
   "devDependencies": {
     "eslint": "^7.8.1",
     "eslint-config-airbnb-base": "^14.2.0",
