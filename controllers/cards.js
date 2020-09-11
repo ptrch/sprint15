@@ -20,12 +20,8 @@ module.exports.createCard = (req, res) => {
 module.exports.delCard = (req, res) => {
   Card.findByIdAndDelete(req.params.cardId)
     .orFail(new Error('CastError'))
-    .then(async (card) => {
-      const userId = req.user._id;
-      const ownerId = card.owner._id.toString();
-      if (ownerId === userId) {
-        res.send({ data: await Card.findByIdAndDelete(req.params.cardId) });
-      } else res.status(403).send({ message: 'Вы не можете удалить чужую карточку' });
+    .then((card) => {
+      res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
