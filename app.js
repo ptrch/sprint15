@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const users = require('./routes/users');
 const cards = require('./routes/cards');
+const { login, createUser } = require('./controllers/users');
 // создаем объект приложения
 const app = express();
 // начинаем прослушивать подключения на 3000 порту
@@ -26,7 +27,8 @@ app.use((req, res, next) => {
 
   next();
 });
-
+app.post('/signin', login);
+app.post('/signup', createUser);
 app.use('/cards', cards);
 app.use('/users', users);
 app.use((req, res) => {
