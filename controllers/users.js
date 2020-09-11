@@ -48,7 +48,7 @@ module.exports.login = (req, res) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       res.send({
-        token: jwt.sign({ _id: user._id }, 'd285e3dceed844f902650f40', { expiresIn: 3600 }),
+        token: jwt.sign({ _id: user._id }, '5f61817f42cc43365a6858629f860b61553388f1f820a7c52d1bfc1347447c09', { expiresIn: 3600 }),
       });
     })
     .catch((err) => {
@@ -56,4 +56,4 @@ module.exports.login = (req, res) => {
         .status(401)
         .send({ message: err.message });
     });
-}
+};
