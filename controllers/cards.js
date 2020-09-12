@@ -18,8 +18,7 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.delCard = (req, res) => {
-  Card.findByIdAndDelete(req.params.cardId)
-    .orFail(new Error('CastError'))
+  Card.findById(req.params.cardId)
     .then(async (card) => {
       const userId = req.user._id;
       const ownerId = card.owner._id.toString();
@@ -28,8 +27,8 @@ module.exports.delCard = (req, res) => {
       } else res.status(403).send({ message: 'Вы не можете удалить чужую карточку' });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Не удалось удалить карточку. Запрашиваемый ресурс не найден' });
+      if (err.name === 'CastError' || err.name === 'TypeError') {
+        res.status(400).send({ message: 'Не удалось удалить карточку. Запрашиваемый ресурс не найден' });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
       }
