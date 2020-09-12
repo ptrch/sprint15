@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ptrch/sprint14.git"
+    "url": "git+https://github.com/ptrch/sprint14.1.git"
   },
   "author": "Petrichenko Alexander",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ptrch/sprint14/issues"
+    "url": "https://github.com/ptrch/sprint14.1/issues"
   },
-  "homepage": "https://github.com/ptrch/sprint14#readme",
+  "homepage": "https://github.com/ptrch/sprint14.1#readme",
   "devDependencies": {
     "eslint": "^7.8.1",
     "eslint-config-airbnb-base": "^14.2.0",
