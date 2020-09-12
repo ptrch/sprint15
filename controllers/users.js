@@ -1,3 +1,4 @@
+const hex = 'b129385add448ea5325c0e7829e2adfea0a3e495fc8ddf81f61b04198f4ab054';
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -48,7 +49,8 @@ module.exports.login = (req, res) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       res.send({
-        token: jwt.sign({ _id: user._id }, '5f61817f42cc43365a6858629f860b61553388f1f820a7c52d1bfc1347447c09', { expiresIn: 3600 }),
+        ver: hex,
+        token: jwt.sign({ _id: user._id }, hex, { expiresIn: 3600 }),
       });
     })
     .catch((err) => {
@@ -57,3 +59,5 @@ module.exports.login = (req, res) => {
         .send({ message: err.message });
     });
 };
+
+module.exports.hex = hex;

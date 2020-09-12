@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const hex = require('../controllers/users');
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
@@ -14,7 +15,7 @@ module.exports = (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, '5f61817f42cc43365a6858629f860b61553388f1f820a7c52d1bfc1347447c09');
+    payload = jwt.verify(token, hex);
   } catch (err) {
     return res
       .status(401)
