@@ -29,8 +29,6 @@ module.exports.delCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'TypeError') {
         res.status(400).send({ message: 'Не удалось удалить карточку. Запрашиваемый ресурс не найден' });
-      } else {
-        res.status(500).send({ message: 'Ошибка сервера' });
-      }
+      } else res.status(500).send({ message: 'Ошибка сервера' });
     });
 };
