@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const hex = require('../controllers/users');
+const { hex } = require('../secretKey');
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {

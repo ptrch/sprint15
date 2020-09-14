@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const urlValid = require('validator').isURL;
 const emailValid = require('validator').isEmail;
-const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: {
       validator: (v) => emailValid(v),
-      message: 'некорректная email',
+      message: 'некорректный email',
     },
   },
   password: {

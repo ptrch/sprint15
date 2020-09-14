@@ -1,0 +1,1 @@
+module.exports.hex = 'b129385add448ea5325c0e7829e2adfea0a3e495fc8ddf81f61b04198f4ab054';

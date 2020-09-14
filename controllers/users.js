@@ -1,7 +1,7 @@
-const hex = 'b129385add448ea5325c0e7829e2adfea0a3e495fc8ddf81f61b04198f4ab054';
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { hex } = require('../secretKey');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -26,10 +26,15 @@ module.exports.getUser = (req, res) => {
 
 module.exports.createUser = (req, res) => {
   const {
-    name, about, avatar, email,
+    name, about, avatar, email, password,
   } = req.body;
-
-  bcrypt.hash(req.body.password, 10)
+  if (!password) {
+    return res.status(400).send({ message: 'Введите пароль' });
+  }
+  if (password.length < 8) {
+    return res.status(400).send({ message: 'Слишком короткий пароль' });
+  }
+  return bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
@@ -38,8 +43,12 @@ module.exports.createUser = (req, res) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: err.message });
-      } else res.status(500).send({ message: 'Ошибка сервера' });
+        return res.status(400).send({ message: err.message });
+      }
+      if (err.name === 'MongoError' && err.code === 11000) {
+        return res.status(409).send({ message: 'Такой пользователь уже существует' });
+      }
+      return res.status(500).send({ message: 'Ошибка сервера' });
     });
 };
 
@@ -59,5 +68,3 @@ module.exports.login = (req, res) => {
         .send({ message: err.message });
     });
 };
-
-module.exports.hex = hex;
