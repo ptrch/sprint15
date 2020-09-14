@@ -1,5 +1,7 @@
 // подключение
 const express = require('express');
+require('dotenv').config();
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const users = require('./routes/users');
@@ -10,6 +12,8 @@ const auth = require('./middlewares/auth');
 const app = express();
 // начинаем прослушивать подключения на 3000 порту
 const { PORT = 3000 } = process.env;
+// подключим заголовки безопасности
+app.use(helmet());
 // подключаем парсеры
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
