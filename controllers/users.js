@@ -2,37 +2,39 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const NotFoundErr = require('../errors/NotFoundErr');
+const BadRequestErr = require('../errors/BadRequestErr');
+const ConflictErr = require('../errors/ConflictErr');
+const AuthorizationErr = require('../errors/AuthorizationErr');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Ошибка сервера' }));
+    .catch(next);
 };
 
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(new Error('CastError'))
     .then((user) => {
-      res.status(200).send({ data: user });
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Не удалось найти пользователя' });
-      } else {
-        res.status(500).send({ message: 'Ошибка сервера' });
-      }
-    });
+        throw new NotFoundErr('Не удалось найти пользователя');
+      } else next(err);
+    })
+    .catch(next);
 };
-
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
   if (!password) {
-    return res.status(400).send({ message: 'Введите пароль' });
+    throw new BadRequestErr('Введите пароль');
   }
   if (password.length < 8) {
-    return res.status(400).send({ message: 'Слишком короткий пароль' });
+    throw new BadRequestErr('Слишком короткий пароль');
   }
   return bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
@@ -43,16 +45,17 @@ module.exports.createUser = (req, res) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: err.message });
+        throw new BadRequestErr(err.message);
       }
       if (err.name === 'MongoError' && err.code === 11000) {
-        return res.status(409).send({ message: 'Такой пользователь уже существует' });
+        throw new ConflictErr('Такой пользователь уже существует');
       }
-      return res.status(500).send({ message: 'Ошибка сервера' });
-    });
+      return next(err);
+    })
+    .catch(next);
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -62,8 +65,7 @@ module.exports.login = (req, res) => {
       });
     })
     .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
-    });
+      throw new AuthorizationErr(err.message);
+    })
+    .catch(next);
 };
