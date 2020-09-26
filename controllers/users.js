@@ -1,34 +1,42 @@
+const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require('bcryptjs');
-const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+const NotFoundErr = require('../errors/NotFoundErr');
+const BadRequestErr = require('../errors/BadRequestErr');
+const ConflictErr = require('../errors/ConflictErr');
+const AuthorizationErr = require('../errors/AuthorizationErr');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Ошибка сервера' }));
+    .catch(next);
 };
 
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(new Error('CastError'))
     .then((user) => {
-      res.status(200).send({ data: user });
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Не удалось найти пользователя' });
-      } else {
-        res.status(500).send({ message: 'Ошибка сервера' });
-      }
-    });
+        throw new NotFoundErr('Не удалось найти пользователя');
+      } else next(err);
+    })
+    .catch(next);
 };
-
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
-    name, about, avatar, email,
+    name, about, avatar, email, password,
   } = req.body;
-
-  bcrypt.hash(req.body.password, 10)
+  if (!password) {
+    throw new BadRequestErr('Введите пароль');
+  }
+  if (password.length < 8) {
+    throw new BadRequestErr('Слишком короткий пароль');
+  }
+  return bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
@@ -37,23 +45,27 @@ module.exports.createUser = (req, res) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: err.message });
-      } else res.status(500).send({ message: 'Ошибка сервера' });
-    });
+        throw new BadRequestErr(err.message);
+      }
+      if (err.name === 'MongoError' && err.code === 11000) {
+        throw new ConflictErr('Такой пользователь уже существует');
+      }
+      return next(err);
+    })
+    .catch(next);
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
       res.send({
-        token: jwt.sign({ _id: user._id }, '5f61817f42cc43365a6858629f860b61553388f1f820a7c52d1bfc1347447c09', { expiresIn: 3600 }),
+        token: jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret-key', { expiresIn: '7d' }),
       });
     })
     .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
-    });
+      throw new AuthorizationErr(err.message);
+    })
+    .catch(next);
 };
